@@ -92,19 +92,32 @@ namespace Projekt
 
                         case 1:
                             {
+                                Okno okno = new Okno();
                                 this.Hide();
-                                Form1 form1 = new Form1();
-                                form1.Show();
+                                okno.Show();
                                 break;
                             }
                         case 2:
                             {
+                                Okno okno = new Okno();
                                 this.Hide();
-                                Form1 form1 = new Form1();
-                                form1.Show();
+                                okno.Show();
                                 break;
                             }
-
+                        case 3:
+                            {
+                                this.Hide();
+                                PodgladDlaUzytkownika podgladDlaUzytkownika = new PodgladDlaUzytkownika();
+                                podgladDlaUzytkownika.Show();
+                                break;
+                            }
+                        case 4:
+                            {
+                                this.Hide();
+                                PodgladDlaUzytkownika podgladDlaUzytkownika = new PodgladDlaUzytkownika();
+                                podgladDlaUzytkownika.Show();
+                                break;
+                            }
                         default:
                             {
                                 MessageBox.Show("Niepoprawne dane logowania");

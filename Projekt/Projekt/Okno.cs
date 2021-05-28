@@ -21,26 +21,6 @@ namespace Projekt
 
         string con = (@"Data Source=ELO420\SQLEXPRESS;Initial Catalog = Delegacje; Integrated Security = True");
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                DialogResult result = MessageBox.Show("Do you really want to exit?", "Dialog Title", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    Environment.Exit(0);
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            }
-            else
-            {
-                e.Cancel = true;
-            }
-        }
-
 
         private void Okno_Load(object sender, EventArgs e)
         {
@@ -97,6 +77,14 @@ namespace Projekt
             da.Fill(dt);
             Podglad.DataSource = dt;
             connect.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DelegationControl delegationControl = new DelegationControl();
+            this.Hide();
+            delegationControl.Show();
+
         }
     }
 }
