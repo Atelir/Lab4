@@ -74,9 +74,9 @@ namespace Projekt
             // 
             this.button3.Location = new System.Drawing.Point(250, 238);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(88, 23);
             this.button3.TabIndex = 4;
-            this.button3.Text = "Usuń";
+            this.button3.Text = "Zmień status";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -198,7 +198,7 @@ namespace Projekt
             // 
             // Podglad
             // 
-            this.Podglad.Location = new System.Drawing.Point(331, 238);
+            this.Podglad.Location = new System.Drawing.Point(344, 238);
             this.Podglad.Name = "Podglad";
             this.Podglad.Size = new System.Drawing.Size(75, 23);
             this.Podglad.TabIndex = 21;
@@ -242,6 +242,7 @@ namespace Projekt
             this.Controls.Add(this.PodgladDelegacje);
             this.Name = "DelegationControl";
             this.Text = "DelegationControl";
+            this.Load += new System.EventHandler(this.DelegationControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.PodgladDelegacje)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

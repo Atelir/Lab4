@@ -15,8 +15,6 @@ namespace Projekt
     public partial class Logowanie : Form
     {
 
-        //SqlCommand checkusers = new SqlCommand("Select * from Pracownicy"); // błedne
-
         string con = (@"Data Source=ELO420\SQLEXPRESS;Initial Catalog = Delegacje; Integrated Security = True");
 
         public Logowanie()
@@ -47,11 +45,12 @@ namespace Projekt
 
         }
 
+        //Do zapamietania nazwy uzytkownika
         public static string Nazwa = "";
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            //Sprawdzenie czy login i haslo zostalo wpisane
             if (string.IsNullOrWhiteSpace(loginbox.Text))
             {
                 MessageBox.Show("Nie wpisano loginu");
@@ -64,13 +63,12 @@ namespace Projekt
 
             else
             {
-                
+                //Podlaczenie do bazy w celu znalezienia czy uzytkownik znajduje sie w bazie
                 SqlConnection connect = new SqlConnection(con);
                 SqlCommand test = new SqlCommand("Select Imie,Nazwisko, IdStanowiska from Pracownik where Imie=@Imie and Nazwisko=@Pass", connect);
                 
                 test.Parameters.AddWithValue("@Imie", loginbox.Text);
                 test.Parameters.AddWithValue("@Pass", passbox.Text);
-                //test.Parameters.AddWithValue("@Stan", 0);
                 var user = test.Parameters.ToString();
                 connect.Open();
                 SqlDataAdapter adapter = new SqlDataAdapter(test);
@@ -80,6 +78,7 @@ namespace Projekt
                 if (ds.Rows.Count == 1)
                 {
                     Nazwa = loginbox.Text + " " + passbox.Text;
+                    //Zalogowanie w zaleznosci od stanowiska uzytkownika
                     switch (ds.Rows[0]["IdStanowiska"])
                     {
                         case 0:
