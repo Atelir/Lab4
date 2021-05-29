@@ -50,6 +50,7 @@ namespace Projekt
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //Konto Login: Jan Hasło: Niezbedny - do dostepu do wszystkiego
             //Sprawdzenie czy login i haslo zostalo wpisane
             if (string.IsNullOrWhiteSpace(loginbox.Text))
             {

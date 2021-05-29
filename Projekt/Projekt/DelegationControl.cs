@@ -43,61 +43,73 @@ namespace Projekt
             try
             {
 
-            
-            DialogResult result = MessageBox.Show("Czy chcesz zapisać ten wpis?", "Zapisać ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                connect.Open();
-                //Sprawdzenie czy podany adres znajduje sie w naszej bazie
-                sql = new SqlCommand("select IdLokalizacji,Miejscowosc,Ulica,KodPocztowy, Kraj from Lokalizacja WHERE Miejscowosc = '"+Miejscowosc.Text+"' AND Ulica='"+Ulica.Text+"' AND KodPocztowy='"+KodPocztowy.Text+"' AND Kraj='"+Kraj.Text+"'",connect);
-                SqlDataAdapter adap = new SqlDataAdapter(sql);
-                DataSet dt = new DataSet();
-                adap.Fill(dt);
-                if (dt.Tables[0].Rows.Count == 1)
+                if (string.IsNullOrWhiteSpace(Imie.Text))
                 {
-
-                    MessageBox.Show("Ten adres już istnieje w bazie");
-
+                    MessageBox.Show("Nie wpisano loginu");
                 }
+
+                else if (string.IsNullOrWhiteSpace(Nazwisko.Text))
+                {
+                    MessageBox.Show("Nie wpisano hasla");
+                }
+
                 else
                 {
-                    //Wpisanie nowego adresu
-                    SqlCommand sql2 = new SqlCommand("insert into Lokalizacja (Miejscowosc,Ulica,KodPocztowy, Kraj) values ('"+Miejscowosc.Text+"', '"+Ulica.Text+"','"+KodPocztowy.Text+"', '"+Kraj.Text+"')",connect);
-                    sql2.ExecuteNonQuery();
-                    SqlDataAdapter adap1 = new SqlDataAdapter(sql);
-                    DataSet dt2 = new DataSet();
-                    adap1.Fill(dt2);
-
-                    //Wyszukanie idpracownika na bazie wpisanego imienia i nazwiska
-                    string txtIdLokalizacji = dt2.Tables[0].Rows[0]["IdLokalizacji"].ToString();
-                    sql1 = new SqlCommand("select IdPracownika from Pracownik where Imie = '" + Imie.Text + "' AND Nazwisko = '" + Nazwisko.Text + "'", connect);
-                    SqlDataAdapter adapter = new SqlDataAdapter(sql1);
-                    DataSet dt1 = new DataSet();
-                    adapter.Fill(dt1);
-                    if (dt1.Tables[0].Rows.Count == 1)
+                    DialogResult result = MessageBox.Show("Czy chcesz zapisać ten wpis?", "Zapisać ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
                     {
-                        //Wpisanie do tabeli delagacja podanych parametrow
-                        string txtIdPracownika = dt1.Tables[0].Rows[0]["IdPracownika"].ToString();
-                        sql = new SqlCommand("insert into Delegacja (IdPracownika,IdLokalizacji,StatusDelegacji,DataWyjazdu) values ('" + txtIdPracownika + "','" + txtIdLokalizacji + "',1,'" + DataWyjazdu.Value.ToString("yyyy-MM-dd") + "')", connect);
-                        sql.ExecuteNonQuery();
+                        connect.Open();
+                        //Sprawdzenie czy podany adres znajduje sie w naszej bazie
+                        sql = new SqlCommand("select IdLokalizacji,Miejscowosc,Ulica,KodPocztowy, Kraj from Lokalizacja WHERE Miejscowosc = '" + Miejscowosc.Text + "' AND Ulica='" + Ulica.Text + "' AND KodPocztowy='" + KodPocztowy.Text + "' AND Kraj='" + Kraj.Text + "'", connect);
+                        SqlDataAdapter adap = new SqlDataAdapter(sql);
+                        DataSet dt = new DataSet();
+                        adap.Fill(dt);
+                        if (dt.Tables[0].Rows.Count == 1)
+                        {
+
+                            MessageBox.Show("Ten adres już istnieje w bazie");
+
+                        }
+                        else
+                        {
+                            //Wpisanie nowego adresu
+                            SqlCommand sql2 = new SqlCommand("insert into Lokalizacja (Miejscowosc,Ulica,KodPocztowy, Kraj) values ('" + Miejscowosc.Text + "', '" + Ulica.Text + "','" + KodPocztowy.Text + "', '" + Kraj.Text + "')", connect);
+                            sql2.ExecuteNonQuery();
+                            SqlDataAdapter adap1 = new SqlDataAdapter(sql);
+                            DataSet dt2 = new DataSet();
+                            adap1.Fill(dt2);
+
+                            //Wyszukanie idpracownika na bazie wpisanego imienia i nazwiska
+                            string txtIdLokalizacji = dt2.Tables[0].Rows[0]["IdLokalizacji"].ToString();
+                            sql1 = new SqlCommand("select IdPracownika from Pracownik where Imie = '" + Imie.Text + "' AND Nazwisko = '" + Nazwisko.Text + "'", connect);
+                            SqlDataAdapter adapter = new SqlDataAdapter(sql1);
+                            DataSet dt1 = new DataSet();
+                            adapter.Fill(dt1);
+                            if (dt1.Tables[0].Rows.Count == 1)
+                            {
+                                //Wpisanie do tabeli delagacja podanych parametrow
+                                string txtIdPracownika = dt1.Tables[0].Rows[0]["IdPracownika"].ToString();
+                                sql = new SqlCommand("insert into Delegacja (IdPracownika,IdLokalizacji,StatusDelegacji,DataWyjazdu) values ('" + txtIdPracownika + "','" + txtIdLokalizacji + "',1,'" + DataWyjazdu.Value.ToString("yyyy-MM-dd") + "')", connect);
+                                sql.ExecuteNonQuery();
+                            }
+                        }
+                        //Wyswietlenie aktualnych delegacji w datagrid
+                        SqlDataAdapter da = new SqlDataAdapter("select d.IdDelegacji,p.Imie,p.Nazwisko,l.ULica,l.Miejscowosc,l.KodPocztowy,l.Kraj,d.DataWyjazdu from Delegacja d inner join Lokalizacja l on d.IdLokalizacji=l.IdLokalizacji INNER join Pracownik p on d.IdPracownika=p.IdPracownika where StatusDelegacji = 1;", connect);
+                        DataTable dt3 = new DataTable();
+                        da.Fill(dt3);
+                        PodgladDelegacje.DataSource = dt3;
+
+                        connect.Close();
+                        ClearParmts();
+                        MessageBox.Show("Zapisano pomyślnie");
+
                     }
+
                 }
-                    //Wyswietlenie aktualnych delegacji w datagrid
-                    SqlDataAdapter da = new SqlDataAdapter("select d.IdDelegacji,p.Imie,p.Nazwisko,l.ULica,l.Miejscowosc,l.KodPocztowy,l.Kraj,d.DataWyjazdu from Delegacja d inner join Lokalizacja l on d.IdLokalizacji=l.IdLokalizacji INNER join Pracownik p on d.IdPracownika=p.IdPracownika where StatusDelegacji = 1;", connect);
-                    DataTable dt3 = new DataTable();
-                    da.Fill(dt3);
-                    PodgladDelegacje.DataSource = dt3;
-
-                    connect.Close();
-                ClearParmts();
-                MessageBox.Show("Zapisano pomyślnie");
-
             }
-
-            }
-            catch (Exception x) 
+            catch (Exception x)
             {
-            MessageBox.Show(x.ToString(), "Wiadomość", MessageBoxButtons.OK, MessageBoxIcon.Error);   
+                MessageBox.Show(x.ToString(), "Wiadomość", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
     }
 
